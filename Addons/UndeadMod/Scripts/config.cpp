@@ -11,18 +11,18 @@
 
 class CfgPatches
 {
-	class UndeadMod_Scripts
+	class UndeadMod
 	{
 		units[]={};
         weapons[]={};
-        requiredVersion=0.1;
+        requiredVersion=0.2;
         requiredAddons[]= {"RPC_Scripts", "JM_CF_Scripts", "VPPNotifications", "DZ_Data"};
 	};
 };
 
 class CfgMods
 {	
-	class DZ_UndeadMod
+	class UndeadMod
 	{	
 		dir = "UndeadMod/Scripts";
 		picture = "";

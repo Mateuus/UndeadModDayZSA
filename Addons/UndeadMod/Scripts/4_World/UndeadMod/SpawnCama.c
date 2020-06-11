@@ -7,7 +7,6 @@
  * This work is licensed under the Creative Commons Attribution-NonCommercial-NoDerivatives 4.0 International License.
  * To view a copy of this license, visit http://creativecommons.org/licenses/by-nc-nd/4.0/.
  *
-	string tempObjId = nearest_objects.Get(i).ToString(); tempObjId.ToLower();	
 */
 
 modded class ItemBase extends InventoryItem
@@ -53,8 +52,6 @@ modded class ItemBase extends InventoryItem
 				UndeadMod.SaveFileData();
 				
 				NotificationSystem.SendNotificationToPlayerIdentityExtended(PlayerID, 4, "Undead Mod", "Nova Cama Adicionada.");
-				UndeadMessage.ServerLog("[UNDEAD MOD] Cama Adicionda em: "+position.ToString(false));	
-				
 			}else{
 				UndeadMod_Cama_Kit_Init = GetGame().CreateObject("Base_Cama", player_base.GetLocalProjectionPosition(), false);
 				UndeadMod_Cama_Kit_Init.SetPosition(position);
@@ -64,7 +61,6 @@ modded class ItemBase extends InventoryItem
 				UndeadMod.SaveFileData();
 				
 				NotificationSystem.SendNotificationToPlayerIdentityExtended(PlayerID, 4, "Undead Mod", "Nova Cama Adicionada.");
-				UndeadMessage.ServerLog("[UNDEAD MOD] Cama Adicionda em: "+position.ToString(false));	
 			}
 		}
 	}
@@ -108,9 +104,8 @@ class UndeadMod
 			while ( FGets( LoadFile,  line_content ) > 0 )
 			{
 				array<string> strings = new array<string>;
-
 				line_content.Split("|", strings);
-		
+						
 				string player_id =  strings.Get(1);
 				float vector_x 	 = 	strings.Get(2).ToFloat();
 				float vector_y   = 	strings.Get(3).ToFloat();
@@ -130,11 +125,19 @@ class UndeadMod
 	{
 		FileHandle SaveFile = OpenFile("$profile:UndeadMod/SpawnCama/Camas.txt", FileMode.WRITE);		
 		if (SaveFile != 0) {
-			int i = 0;
+			int i = 0;			
 			foreach(string player_id, vector CamaPos: UndeadMod.ServerCamaData)
 			{
 				i++;
-				string attach = i.ToString() + "|" + player_id + "|" + CamaPos.ToString(false);
+				array<string> s_vector = new array<string>;
+				string CamaPosString = CamaPos.ToString(false);
+				CamaPosString.Split(" ", s_vector);
+				
+				float vector_x 	 = 	s_vector.Get(0).ToFloat();
+				float vector_y   = 	s_vector.Get(1).ToFloat();
+				float vector_z   = 	s_vector.Get(2).ToFloat();
+					
+				string attach = i.ToString() + "|" + player_id + "|" + vector_x + "|" +vector_y+ "|" +vector_z;
 				FPrintln(SaveFile, attach );
 			}
 			CloseFile(SaveFile);
@@ -148,7 +151,7 @@ class UndeadMod
 		ServerCamaData.Insert(player_id.GetId(), CamaPos);
 		
 		string player_name = player_id.GetName();
-		UndeadMessage.ServerLog("[UNDEAD MOD] O jogador "+player_name+" : "+CamaPos);
+		UndeadMessage.ServerLog("[UNDEAD MOD] O jogador "+player_name+" adicionou uma cama na posição: "+CamaPos);
 	}
 	
 	static void Remove(string playerID)
