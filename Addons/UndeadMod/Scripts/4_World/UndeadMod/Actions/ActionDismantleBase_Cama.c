@@ -73,7 +73,7 @@ class ActionDismantleBase_Cama: ActionContinuousBase
 			//delete existing model
 			base_cama.Base_Destroy();
 			
-			UndeadMod.DeleteServerCama(base_cama.GetPosition());
+			//UndeadMod.DeleteServerCama(base_cama.GetPosition());
 			
 			//add damage to tool
 			action_data.m_MainItem.DecreaseHealth( UADamageApplied.DISMANTLE, false );

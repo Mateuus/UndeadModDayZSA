@@ -68,27 +68,23 @@ modded class ItemBase extends InventoryItem
 	override void EEDelete(EntityAI parent)
 	{
 		super.EEDelete(parent);
-		
 		if (this.GetType() == "Base_Cama") {
-			foreach(string player_id, vector CamaPos: UndeadMod.ServerCamaData)
-			{
-				string CPosition = this.GetPosition().ToString(false);
-				string OldCPosition =  CamaPos.ToString(false);
-				
-				if (CPosition == OldCPosition){
-					UndeadMod.ServerCamaData.Remove(player_id);
-					UndeadMod.SaveFileData();
-					UndeadMessage.ServerLog("[UNDEAD MOD] Cama Deletada em: "+CamaPos);	
-				}
-			}
+			UndeadMod.DeleteServerCama(this.GetPosition());
 		}
 	}
 }
 
-class UndeadMod
+class UndeadMod: Managed
 {
 	static bool m_Loaded = false;
 	static ref map<string,vector> ServerCamaData = new map<string,vector>;
+	
+	void UndeadMod()
+	{
+	}
+	void ~UndeadMod()
+	{	
+	}
 	
 	static void LoadFileData()
 	{
@@ -168,13 +164,12 @@ class UndeadMod
 	static void DeleteServerCama (vector cama)
 	{
 		foreach(string player_id, vector CamaPos: UndeadMod.ServerCamaData)
-		{
-			string CPosition = cama.ToString(false);
-			string OldCPosition = CamaPos.ToString(false);
-			if (CPosition == OldCPosition){
+		{			
+			float distance = vector.Distance(CamaPos, cama);			
+			if (distance <= 1){
 				UndeadMod.ServerCamaData.Remove(player_id);
-				UndeadMod.SaveFileData();
 				UndeadMessage.ServerLog("[UNDEAD MOD] Cama Deletada em: "+CamaPos);	
+				UndeadMod.SaveFileData();
 			}
 		}
 	}
